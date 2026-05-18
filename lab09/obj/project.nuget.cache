@@ -1,0 +1,18 @@
+{
+  "version": 2,
+  "dgSpecHash": "/7UbY7rhn+Q=",
+  "success": true,
+  "projectFilePath": "/home/szymon/RiderProjects/lab09/lab09/lab09.csproj",
+  "expectedPackageFiles": [
+    "/home/szymon/.nuget/packages/microsoft.data.sqlite/11.0.0-preview.3.26207.106/microsoft.data.sqlite.11.0.0-preview.3.26207.106.nupkg.sha512",
+    "/home/szymon/.nuget/packages/microsoft.data.sqlite.core/11.0.0-preview.3.26207.106/microsoft.data.sqlite.core.11.0.0-preview.3.26207.106.nupkg.sha512",
+    "/home/szymon/.nuget/packages/sourcegear.sqlite3/3.50.4.2/sourcegear.sqlite3.3.50.4.2.nupkg.sha512",
+    "/home/szymon/.nuget/packages/sqlite/3.13.0/sqlite.3.13.0.nupkg.sha512",
+    "/home/szymon/.nuget/packages/sqlitepclraw.bundle_e_sqlite3/3.0.2/sqlitepclraw.bundle_e_sqlite3.3.0.2.nupkg.sha512",
+    "/home/szymon/.nuget/packages/sqlitepclraw.config.e_sqlite3/3.0.2/sqlitepclraw.config.e_sqlite3.3.0.2.nupkg.sha512",
+    "/home/szymon/.nuget/packages/sqlitepclraw.core/3.0.2/sqlitepclraw.core.3.0.2.nupkg.sha512",
+    "/home/szymon/.nuget/packages/sqlitepclraw.provider.e_sqlite3/3.0.2/sqlitepclraw.provider.e_sqlite3.3.0.2.nupkg.sha512",
+    "/home/szymon/.nuget/packages/system.memory/4.6.3/system.memory.4.6.3.nupkg.sha512"
+  ],
+  "logs": []
+}

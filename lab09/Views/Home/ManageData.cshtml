@@ -1,0 +1,17 @@
+@model List<string>
+
+<h2>Zarządzanie danymi</h2>
+
+<form asp-action="AddData" method="post">
+    <input type="text" name="newData" class="form-control" placeholder="Wpisz nową informację..." required />
+    <button type="submit">Dodaj do bazy</button>
+</form>
+
+
+<h4>Istniejące rekordy:</h4>
+<ul>
+    @foreach (var info in Model)
+    {
+        <li>@info</li>
+    }
+</ul>
