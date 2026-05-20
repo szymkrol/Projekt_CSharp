@@ -42,7 +42,7 @@ app.UseAuthorization();
 
 app.Use(async (ctx, next) =>
 {
-    if (ctx.Request.Path.Value.Contains("/IO/Login") || ctx.Request.Path.Value.Contains("/Home/Index"))
+    if (ctx.Request.Path.Value.Contains("/IO/Login") || ctx.Request.Path.Value.Contains("/IO/Register") || ctx.Request.Path.Value.Contains("/Home/Index"))
     {
         await next();
         return;

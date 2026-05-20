@@ -1,12 +1,28 @@
 @model List<string>
 
-<h2>Zarządzanie danymi</h2>
+<h2>Dodaj wpis</h2>
 
-<form asp-action="AddData" method="post">
-    <input type="text" name="newData" class="form-control" placeholder="Wpisz nową informację..." required />
-    <button type="submit">Dodaj do bazy</button>
+<form asp-action="AddData" method="post" style="max-width: 500px">
+    <div class="mb-3">
+        <label class="form-label">Treść</label>
+        <input type="text" name="newData" class="form-control" placeholder="Wpisz treść..." required />
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Przedmiot</label>
+        <input type="text" name="przedmiot" class="form-control" required />
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Prowadzący (opcjonalnie)</label>
+        <input type="text" name="prowadzacy" class="form-control" />
+    </div>
+    <div class="mb-3 form-check">
+        <input type="checkbox" name="czyPytanie" class="form-check-input" value="true" />
+        <label class="form-check-label">To jest pytanie</label>
+    </div>
+    <button type="submit" class="btn btn-primary">Dodaj</button>
 </form>
 
+<hr />
 
 <h4>Istniejące rekordy:</h4>
 <ul>

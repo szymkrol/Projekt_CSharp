@@ -58,4 +58,44 @@ public class IOController : Controller
     {
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
+
+    public IActionResult Register()
+    {
+        return View();
+    }
+
+
+    [HttpPost]
+    public IActionResult Register(string login, string mail, string password)
+    {
+        string hashedPassword = DbManager.CalculateMD5(password);
+        using var connection = new SqliteConnection(DbManager.GetConnectionString());
+        connection.Open();
+        var commandLogin = connection.CreateCommand();
+        commandLogin.CommandText = "SELECT COUNT(*) FROM logins WHERE login = $login";
+        commandLogin.Parameters.AddWithValue("$login", login);
+
+        var commandMail = connection.CreateCommand();
+        commandMail.CommandText = "SELECT COUNT(*) FROM logins WHERE mail = $mail";
+        commandMail.Parameters.AddWithValue("$mail", mail);
+
+        if ((long)commandLogin.ExecuteScalar() > 0)
+        {
+            HttpContext.Session.SetString("Error", "Login już istnieje!");
+            return RedirectToAction("Register");
+        }else if ((long)commandMail.ExecuteScalar() > 0)
+        {
+            HttpContext.Session.SetString("Error", "Email już istnieje!");
+            return RedirectToAction("Register");
+        }else{
+
+            var command = connection.CreateCommand();   
+            command.CommandText = "INSERT INTO logins (login, mail, haslo) VALUES ($login, $mail, $password)";
+            command.Parameters.AddWithValue("$login", login);
+            command.Parameters.AddWithValue("$mail", mail);
+            command.Parameters.AddWithValue("$password", hashedPassword);
+            command.ExecuteNonQuery();
+            return RedirectToAction("Login");
+        }
+    }
 }

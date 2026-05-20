@@ -207,12 +207,12 @@
           "runtimes/win7-x64/native/sqlite3.dll": {
             "rid": "win7-x64",
             "assetType": "native",
-            "fileVersion": "0.0.0.0"
+            "fileVersion": "3.13.0.0"
           },
           "runtimes/win7-x86/native/sqlite3.dll": {
             "rid": "win7-x86",
             "assetType": "native",
-            "fileVersion": "0.0.0.0"
+            "fileVersion": "3.13.0.0"
           }
         }
       },
@@ -234,9 +234,6 @@
         }
       },
       "SQLitePCLRaw.core/3.0.2": {
-        "dependencies": {
-          "System.Memory": "4.6.3"
-        },
         "runtime": {
           "lib/netstandard2.0/SQLitePCLRaw.core.dll": {
             "assemblyVersion": "3.0.2.2801",
@@ -254,8 +251,7 @@
             "fileVersion": "3.0.2.2801"
           }
         }
-      },
-      "System.Memory/4.6.3": {}
+      }
     }
   },
   "libraries": {
@@ -319,13 +315,6 @@
       "sha512": "sha512-RQIliDp47mQxGYNcBB6W+ezHbegkImrSZVTuWjQCSTTl3pQ37Q3rALkkkdTAMEmcIz71PEOCqNZMp7lXCnVqEQ==",
       "path": "sqlitepclraw.provider.e_sqlite3/3.0.2",
       "hashPath": "sqlitepclraw.provider.e_sqlite3.3.0.2.nupkg.sha512"
-    },
-    "System.Memory/4.6.3": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-qdcDOgnFZY40+Q9876JUHnlHu7bosOHX8XISRoH94fwk6hgaeQGSgfZd8srWRZNt5bV9ZW2TljcegDNxsf+96A==",
-      "path": "system.memory/4.6.3",
-      "hashPath": "system.memory.4.6.3.nupkg.sha512"
     }
   }
 }

@@ -1,8 +1,60 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Strona główna";
+    var feed = (List<(int id, string login, string informacja, string przedmiot, string prowadzacy, string data, bool czyPytanie)>)ViewData["Feed"];
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<h2 class="mb-4">Ostatnie wpisy</h2>
+
+@foreach (var wpis in feed)
+{
+    var replies = DbManager.GetReplies(wpis.id);
+    <div class="card mb-3">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+                <div class="d-flex gap-2 align-items-center">
+                    <a asp-controller="User" asp-action="Profile" asp-route-username="@wpis.login">
+                        <strong>@wpis.login</strong>
+                    </a>
+                    @if (wpis.czyPytanie)
+                    {
+                        <span class="badge bg-warning text-dark">Pytanie</span>
+                    }
+                </div>
+                <small class="text-muted">@wpis.data</small>
+            </div>
+            <p class="card-text mb-2">@wpis.informacja</p>
+            <div class="d-flex gap-2 mb-3">
+                @if (!string.IsNullOrEmpty(wpis.przedmiot))
+                {
+                    <span class="badge bg-primary">@wpis.przedmiot</span>
+                }
+                @if (!string.IsNullOrEmpty(wpis.prowadzacy))
+                {
+                    <span class="badge bg-secondary">@wpis.prowadzacy</span>
+                }
+            </div>
+
+            @if (replies.Any())
+            {
+                <div class="ms-3 border-start ps-3">
+                    @foreach (var reply in replies)
+                    {
+                        <div class="mb-2">
+                            <a asp-controller="User" asp-action="Profile" asp-route-username="@reply.login">
+                                <strong>@reply.login</strong>
+                            </a>
+                            <small class="text-muted ms-2">@reply.data</small>
+                            <p class="mb-0">@reply.tresc</p>
+                        </div>
+                    }
+                </div>
+            }
+
+            <form asp-controller="Home" asp-action="AddReply" method="post" class="d-flex gap-2 mt-3">
+                <input type="hidden" name="postId" value="@wpis.id" />
+                <input type="text" name="tresc" class="form-control form-control-sm" placeholder="Odpowiedz..." />
+                <button type="submit" class="btn btn-sm btn-outline-primary">Wyślij</button>
+            </form>
+        </div>
+    </div>
+}
