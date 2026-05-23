@@ -1,11 +1,10 @@
 using lab09;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddControllersWithViews();
-
-//Dodanie obsługo sesji
+builder.Services.AddDbContext<AppDbContext>();
 builder.Services.AddDistributedMemoryCache();
 
 builder.Services.AddSession(options =>
@@ -15,9 +14,12 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
-DbManager.Initialize();
-
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    scope.ServiceProvider.GetRequiredService<AppDbContext>().Database.EnsureCreated();
+}
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
@@ -25,10 +27,9 @@ app.UseStaticFiles();
 app.Use(async (ctx, next) =>
 {
     await next();
-    if(ctx.Response.StatusCode == 404 && !ctx.Response.HasStarted)
+    if (ctx.Response.StatusCode == 404 && !ctx.Response.HasStarted)
     {
-        //Re-execute the request so the user gets the error page
-        string originalPath = ctx.Request.Path.Value;
+        string? originalPath = ctx.Request.Path.Value;
         ctx.Items["originalPath"] = originalPath;
         ctx.Request.Path = "/Home/Index";
         await next();
@@ -36,13 +37,14 @@ app.Use(async (ctx, next) =>
 });
 
 app.UseRouting();
-//Dodanie obsługo sesji
 app.UseSession();
 app.UseAuthorization();
 
 app.Use(async (ctx, next) =>
 {
-    if (ctx.Request.Path.Value.Contains("/IO/Login") || ctx.Request.Path.Value.Contains("/IO/Register") || ctx.Request.Path.Value.Contains("/Home/Index"))
+    if (ctx.Request.Path.Value!.Contains("/IO/Login") || 
+        ctx.Request.Path.Value.Contains("/IO/Register") || 
+        ctx.Request.Path.Value.Contains("/Home/Index"))
     {
         await next();
         return;

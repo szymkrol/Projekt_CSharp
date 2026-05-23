@@ -2,38 +2,49 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using lab09.Models;
 using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
 
 namespace lab09.Controllers;
 
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
+    private readonly AppDbContext _context;
 
-    public HomeController(ILogger<HomeController> logger)
+    public HomeController(ILogger<HomeController> logger, AppDbContext context)
     {
         _logger = logger;
+        _context = context;
     }
 
-    public IActionResult Index()
+    public IActionResult Index(string? przedmiot, string? prowadzacy, bool? bezOdpowiedzi)
     {
-        ViewData["Feed"] = DbManager.GetFeed();
+        var query = _context.Posts
+            .Include(p => p.PostInfo)
+            .Include(p => p.Replies)
+            .AsQueryable();
+
+        if (bezOdpowiedzi == true)
+            query = query.Where(p => p.PostInfo != null && p.PostInfo.CzyPytanie && !p.Replies.Any());
+
+        if (!string.IsNullOrEmpty(przedmiot))
+            query = query.Where(p => p.PostInfo != null && p.PostInfo.Przedmiot.Contains(przedmiot));
+
+        if (!string.IsNullOrEmpty(prowadzacy))
+            query = query.Where(p => p.PostInfo != null && p.PostInfo.Prowadzacy != null && p.PostInfo.Prowadzacy.Contains(prowadzacy));
+
+        ViewData["Feed"] = query.OrderByDescending(p => p.Id).ToList();
+        ViewData["Przedmiot"] = przedmiot;
+        ViewData["Prowadzacy"] = prowadzacy;
         return View();
     }
     
     public IActionResult ManageData()
     {
-        var dataList = new List<string>();
-        using var connection = new SqliteConnection(DbManager.GetConnectionString());
-        connection.Open();
-    
-        var command = connection.CreateCommand();
-        command.CommandText = "SELECT informacja FROM data";
-        using var reader = command.ExecuteReader();
-        while (reader.Read())
-        {
-            dataList.Add(reader.GetString(0));
-        }
-    
+        var dataList = _context.Posts
+            .Select(p => p.Informacja)
+            .ToList();
+
         return View(dataList);
     }
 
@@ -42,28 +53,20 @@ public class HomeController : Controller
     {
         if (!string.IsNullOrEmpty(newData))
         {
-            using var connection = new SqliteConnection(DbManager.GetConnectionString());
-            connection.Open();
-
-            var cmd = connection.CreateCommand();
-            cmd.CommandText = "INSERT INTO data (login, informacja) VALUES ($login, $info)";
-            cmd.Parameters.AddWithValue("$login", HttpContext.Session.GetString("User"));
-            cmd.Parameters.AddWithValue("$info", newData);
-            cmd.ExecuteNonQuery();
-
-            var lastId = connection.CreateCommand();
-            lastId.CommandText = "SELECT last_insert_rowid()";
-            long postId = (long)lastId.ExecuteScalar();
-
-            var cmdInfo = connection.CreateCommand();
-            cmdInfo.CommandText = @"INSERT INTO post_info (post_id, przedmiot, prowadzacy, data, czy_pytanie) 
-                                    VALUES ($postId, $przedmiot, $prowadzacy, $data, $czyPytanie)";
-            cmdInfo.Parameters.AddWithValue("$postId", postId);
-            cmdInfo.Parameters.AddWithValue("$przedmiot", przedmiot ?? "");
-            cmdInfo.Parameters.AddWithValue("$prowadzacy", prowadzacy ?? "");
-            cmdInfo.Parameters.AddWithValue("$data", DateTime.Now.ToString("yyyy-MM-dd HH:mm"));
-            cmdInfo.Parameters.AddWithValue("$czyPytanie", czyPytanie ? 1 : 0);
-            cmdInfo.ExecuteNonQuery();
+            var post = new Post
+            {
+                Login = HttpContext.Session.GetString("User") ?? "",
+                Informacja = newData,
+                PostInfo = new PostInfo
+                {
+                    Przedmiot = przedmiot ?? "",
+                    Prowadzacy = prowadzacy ?? "",
+                    Data = DateTime.Now.ToString("yyyy-MM-dd HH:mm"),
+                    CzyPytanie = czyPytanie
+                }
+            };
+            _context.Posts.Add(post);
+            _context.SaveChanges();
         }
         return RedirectToAction("ManageData");
     }
@@ -78,7 +81,16 @@ public class HomeController : Controller
     public IActionResult AddReply(int postId, string tresc)
     {
         if (!string.IsNullOrEmpty(tresc))
-            DbManager.AddReply(postId, HttpContext.Session.GetString("User"), tresc);
+        {
+            _context.PostReplies.Add(new PostReply
+            {
+                PostId = postId,
+                Login = HttpContext.Session.GetString("User") ?? "",
+                Tresc = tresc,
+                Data = DateTime.Now.ToString("yyyy-MM-dd HH:mm")
+            });
+            _context.SaveChanges();
+        }
         return RedirectToAction("Index");
     }
 }

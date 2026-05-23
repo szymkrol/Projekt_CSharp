@@ -1,36 +1,52 @@
-﻿@{
+﻿@using Microsoft.EntityFrameworkCore
+@inject lab09.AppDbContext DbContext
+
+@{
     ViewData["Title"] = "Strona główna";
-    var feed = (List<(int id, string login, string informacja, string przedmiot, string prowadzacy, string data, bool czyPytanie)>)ViewData["Feed"];
+    var feed = (List<lab09.Post>)ViewData["Feed"]!;
 }
+
+<div class="d-flex gap-2 mb-3">
+    <a class="btn btn-outline-secondary btn-sm" asp-action="Index">Wszystkie</a>
+    <a class="btn btn-outline-warning btn-sm" asp-action="Index" asp-route-bezOdpowiedzi="true">Pytania bez odpowiedzi</a>
+</div>
+
+<form method="get" asp-action="Index" class="d-flex gap-2 mb-4">
+    <input type="text" name="przedmiot" class="form-control form-control-sm"
+           placeholder="Szukaj po przedmiocie..." value="@ViewData["Przedmiot"]" />
+    <input type="text" name="prowadzacy" class="form-control form-control-sm"
+           placeholder="Szukaj po prowadzącym..." value="@ViewData["Prowadzacy"]" />
+    <button type="submit" class="btn btn-primary btn-sm">Szukaj</button>
+</form>
 
 <h2 class="mb-4">Ostatnie wpisy</h2>
 
 @foreach (var wpis in feed)
 {
-    var replies = DbManager.GetReplies(wpis.id);
+    var replies = DbContext.PostReplies.Where(r => r.PostId == wpis.Id).OrderBy(r => r.Id).ToList();
     <div class="card mb-3">
         <div class="card-body">
             <div class="d-flex justify-content-between align-items-start mb-2">
                 <div class="d-flex gap-2 align-items-center">
-                    <a asp-controller="User" asp-action="Profile" asp-route-username="@wpis.login">
-                        <strong>@wpis.login</strong>
+                    <a asp-controller="User" asp-action="Profile" asp-route-username="@wpis.Login">
+                        <strong>@wpis.Login</strong>
                     </a>
-                    @if (wpis.czyPytanie)
+                    @if (wpis.PostInfo?.CzyPytanie == true)
                     {
                         <span class="badge bg-warning text-dark">Pytanie</span>
                     }
                 </div>
-                <small class="text-muted">@wpis.data</small>
+                <small class="text-muted">@wpis.PostInfo?.Data</small>
             </div>
-            <p class="card-text mb-2">@wpis.informacja</p>
+            <p class="card-text mb-2">@wpis.Informacja</p>
             <div class="d-flex gap-2 mb-3">
-                @if (!string.IsNullOrEmpty(wpis.przedmiot))
+                @if (!string.IsNullOrEmpty(wpis.PostInfo?.Przedmiot))
                 {
-                    <span class="badge bg-primary">@wpis.przedmiot</span>
+                    <span class="badge bg-primary">@wpis.PostInfo.Przedmiot</span>
                 }
-                @if (!string.IsNullOrEmpty(wpis.prowadzacy))
+                @if (!string.IsNullOrEmpty(wpis.PostInfo?.Prowadzacy))
                 {
-                    <span class="badge bg-secondary">@wpis.prowadzacy</span>
+                    <span class="badge bg-secondary">@wpis.PostInfo.Prowadzacy</span>
                 }
             </div>
 
@@ -40,18 +56,18 @@
                     @foreach (var reply in replies)
                     {
                         <div class="mb-2">
-                            <a asp-controller="User" asp-action="Profile" asp-route-username="@reply.login">
-                                <strong>@reply.login</strong>
+                            <a asp-controller="User" asp-action="Profile" asp-route-username="@reply.Login">
+                                <strong>@reply.Login</strong>
                             </a>
-                            <small class="text-muted ms-2">@reply.data</small>
-                            <p class="mb-0">@reply.tresc</p>
+                            <small class="text-muted ms-2">@reply.Data</small>
+                            <p class="mb-0">@reply.Tresc</p>
                         </div>
                     }
                 </div>
             }
 
             <form asp-controller="Home" asp-action="AddReply" method="post" class="d-flex gap-2 mt-3">
-                <input type="hidden" name="postId" value="@wpis.id" />
+                <input type="hidden" name="postId" value="@wpis.Id" />
                 <input type="text" name="tresc" class="form-control form-control-sm" placeholder="Odpowiedz..." />
                 <button type="submit" class="btn btn-sm btn-outline-primary">Wyślij</button>
             </form>

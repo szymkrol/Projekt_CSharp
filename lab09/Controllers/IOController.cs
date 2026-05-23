@@ -2,17 +2,19 @@ using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using lab09.Models;
 using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
 
 namespace lab09.Controllers;
 
 public class IOController : Controller
 {
-    private readonly ILogger<HomeController> _logger;
+    private readonly AppDbContext _context;
 
-    public IOController(ILogger<HomeController> logger)
+    public IOController(AppDbContext context)
     {
-        _logger = logger;
-    }
+        _context = context;
+    }   
+
     public IActionResult Login()
     {
         return View();
@@ -21,20 +23,11 @@ public class IOController : Controller
     [HttpPost]
     public IActionResult Login(string login, string password)
     {
-        string hashedPassword = DbManager.CalculateMD5(password);
-        
-        
-        using var connection = new SqliteConnection(DbManager.GetConnectionString());
-        connection.Open();
+        string hashedPassword = AppDbContext.CalculateMD5(password);
 
-        var command = connection.CreateCommand();
-        command.CommandText = "SELECT COUNT(*) FROM logins WHERE login = $login AND haslo = $password";
-    
-        command.Parameters.AddWithValue("$login", login);
-        command.Parameters.AddWithValue("$password", hashedPassword);
-        long count = (long)command.ExecuteScalar();
+        bool valid = _context.Logins.Any(l => l.LoginName == login && l.Haslo == hashedPassword);
 
-        if (count > 0)
+        if (valid)
         {
             HttpContext.Session.SetString("IsLoggedIn", "true");
             HttpContext.Session.SetString("User", login);
@@ -68,34 +61,26 @@ public class IOController : Controller
     [HttpPost]
     public IActionResult Register(string login, string mail, string password)
     {
-        string hashedPassword = DbManager.CalculateMD5(password);
-        using var connection = new SqliteConnection(DbManager.GetConnectionString());
-        connection.Open();
-        var commandLogin = connection.CreateCommand();
-        commandLogin.CommandText = "SELECT COUNT(*) FROM logins WHERE login = $login";
-        commandLogin.Parameters.AddWithValue("$login", login);
-
-        var commandMail = connection.CreateCommand();
-        commandMail.CommandText = "SELECT COUNT(*) FROM logins WHERE mail = $mail";
-        commandMail.Parameters.AddWithValue("$mail", mail);
-
-        if ((long)commandLogin.ExecuteScalar() > 0)
+        if (_context.Logins.Any(l => l.LoginName == login))
         {
             HttpContext.Session.SetString("Error", "Login już istnieje!");
             return RedirectToAction("Register");
-        }else if ((long)commandMail.ExecuteScalar() > 0)
+        }
+
+        if (_context.Logins.Any(l => l.Mail == mail))
         {
             HttpContext.Session.SetString("Error", "Email już istnieje!");
             return RedirectToAction("Register");
-        }else{
-
-            var command = connection.CreateCommand();   
-            command.CommandText = "INSERT INTO logins (login, mail, haslo) VALUES ($login, $mail, $password)";
-            command.Parameters.AddWithValue("$login", login);
-            command.Parameters.AddWithValue("$mail", mail);
-            command.Parameters.AddWithValue("$password", hashedPassword);
-            command.ExecuteNonQuery();
-            return RedirectToAction("Login");
         }
+
+        _context.Logins.Add(new Login
+        {
+            LoginName = login,
+            Mail = mail,
+            Haslo = AppDbContext.CalculateMD5(password)
+        });
+        _context.SaveChanges();
+
+        return RedirectToAction("Login");
     }
 }
