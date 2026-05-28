@@ -1,0 +1,41 @@
+@{
+    ViewData["Title"] = "Zarządzanie";
+    var prowadzacy = (List<lab09.Prowadzacy>)ViewData["Prowadzacy"]!;
+    var przedmioty = (List<lab09.Przedmiot>)ViewData["Przedmioty"]!;
+    var wydzialy = (List<lab09.Wydzial>)ViewData["Wydzialy"]!;
+}
+
+<h2>Dodaj prowadzącego</h2>
+<form method="post" asp-action="AddProwadzacy">
+    <input type="text" name="nazwa" placeholder="Nazwa" class="form-control mb-2" />
+    <select name="wydzialId" class="form-control mb-2">
+        <option value="">-- Wydział --</option>
+        @foreach (var w in (List<lab09.Wydzial>)ViewData["Wydzialy"]!)
+        {
+            <option value="@w.Id">@w.Nazwa</option>
+        }
+    </select>
+    <button type="submit" class="btn btn-primary">Dodaj</button>
+</form>
+
+<h2 class="mt-4">Dodaj przedmiot</h2>
+<form method="post" asp-action="AddPrzedmiot">
+    <input type="text" name="nazwa" placeholder="Nazwa" class="form-control mb-2" />
+    <select name="wydzialId" class="form-control mb-2">
+        <option value="">-- Wydział --</option>
+        @foreach (var w in (List<lab09.Wydzial>)ViewData["Wydzialy"]!)
+        {
+            <option value="@w.Id">@w.Nazwa</option>
+        }
+    </select>
+    <input type="text" name="kierunek" placeholder="Kierunek" class="form-control mb-2" />
+    <label>Prowadzący:</label>
+    @foreach (var p in prowadzacy)
+    {
+        <div class="form-check">
+            <input type="checkbox" name="prowadzacyIds" value="@p.Id" class="form-check-input" />
+            <label class="form-check-label">@p.Nazwa</label>
+        </div>
+    }
+    <button type="submit" class="btn btn-primary mt-2">Dodaj</button>
+</form>

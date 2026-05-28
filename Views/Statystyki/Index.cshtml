@@ -1,0 +1,47 @@
+@{
+    ViewData["Title"] = "Statystyki";
+    var poWydzialach = (dynamic)ViewData["PoWydzialach"]!;
+    var poPrzedmiotach = (dynamic)ViewData["PoPrzedmiotach"]!;
+    var poProwadzacych = (dynamic)ViewData["PoProwadzacych"]!;
+}
+
+<h1>Statystyki</h1>
+
+<div class="row mt-4">
+    <div class="col-md-4">
+        <h4>Posty wg wydziału przedmiotu</h4>
+        <table class="table table-sm">
+            @foreach (var row in poWydzialach)
+            {
+                <tr>
+                    <td>@row.Nazwa</td>
+                    <td><span class="badge bg-primary">@row.Liczba</span></td>
+                </tr>
+            }
+        </table>
+    </div>
+    <div class="col-md-4">
+        <h4>Posty wg przedmiotu</h4>
+        <table class="table table-sm">
+            @foreach (var row in poPrzedmiotach)
+            {
+                <tr>
+                    <td>@row.Nazwa</td>
+                    <td><span class="badge bg-primary">@row.Liczba</span></td>
+                </tr>
+            }
+        </table>
+    </div>
+    <div class="col-md-4">
+        <h4>Posty wg prowadzącego</h4>
+        <table class="table table-sm">
+            @foreach (var row in poProwadzacych)
+            {
+                <tr>
+                    <td>@row.Nazwa</td>
+                    <td><span class="badge bg-primary">@row.Liczba</span></td>
+                </tr>
+            }
+        </table>
+    </div>
+</div>

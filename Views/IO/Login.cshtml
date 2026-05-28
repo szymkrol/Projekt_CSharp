@@ -1,0 +1,20 @@
+@model dynamic
+
+@{
+    ViewData["Title"] = "Logowanie";
+    string? error = Context.Session.GetString("Error");
+}
+
+@if (!string.IsNullOrEmpty(error))
+{
+    <div style="color: red;">
+        @error
+    </div>
+    Context.Session.Remove("Error");
+}
+
+<form method="post">
+    <input type="text" name="login" placeholder="Login"/>
+    <input type="password" name="password" placeholder="Hasło"/>
+    <button type="submit">Zaloguj</button>
+</form>

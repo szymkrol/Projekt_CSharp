@@ -1,0 +1,14 @@
+@{
+    ViewData["Title"] = "Wszyscy użytkownicy";
+}
+
+<h1>Użytkownicy</h1>
+
+<ul>
+    @foreach (var profile in (List<string>)ViewData["Profiles"]!)
+    {
+        <li>
+            <a href="/User/Profile?username=@profile">@profile</a>
+        </li>
+    }
+</ul>

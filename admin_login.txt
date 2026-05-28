@@ -1,0 +1,76 @@
+﻿HTTP/1.1 302 Found
+Content-Length: 0
+Date: Thu, 28 May 2026 21:16:38 GMT
+Server: Kestrel
+Cache-Control: no-cache,no-store
+Expires: -1
+Location: /
+Pragma: no-cache
+Set-Cookie: .AspNetCore.Session=CfDJ8GIC7mUbrmVNhvenKbbYPc7GzUMdYNqsqZnYBOmbEGA79h7iDi5NTmJOtPfd1CsqvrR4NQW5ZhUsuexpmvwlKvLGuw0eyfOkHE1mIEuD3fSHTYshfji4Ge%2BnzRLYR4rUqNpZl1QWR%2BL8sEtC2VA5GSlF6%2BIvY5s%2B637Kazs%2Fr9I1; path=/; samesite=lax; httponly
+
+HTTP/1.1 302 Found
+Content-Length: 0
+Date: Thu, 28 May 2026 21:16:38 GMT
+Server: Kestrel
+Location: /IO/Login
+
+HTTP/1.1 200 OK
+Content-Type: text/html; charset=utf-8
+Date: Thu, 28 May 2026 21:16:38 GMT
+Server: Kestrel
+Cache-Control: no-cache, no-store
+Pragma: no-cache
+Set-Cookie: .AspNetCore.Antiforgery.RLQIocL7hQ8=CfDJ8GIC7mUbrmVNhvenKbbYPc4L-i0mvKVfU8imdFPEcmrefaYq1PyFT1bTLUqaJxpyOijCwLoMIOaFK-tdazJj_AmXQ2Itqhyhexz6-P4O4DzstTtjMIPDH4C8FOrTKgGbHbvdc5JBjGQnIiQfcHEwEyg; path=/; samesite=strict; httponly
+Transfer-Encoding: chunked
+X-Frame-Options: SAMEORIGIN
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Logowanie - KSeF</title>
+    <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/site.css?v=pAGv4ietcJNk_EwsQZ5BN9-K4MuNYS2a9wl4Jw-q9D0" />
+    <link rel="stylesheet" href="/lab09.styles.css?v=8R0PEnDzktvEMZPsB-xpRn8b89GCXP18alfOLOxJ1Hc" />
+</head>
+<body>
+<header b-l0rwnlryl9>
+    <nav b-l0rwnlryl9 class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <div b-l0rwnlryl9 class="container-fluid">
+            <a class="navbar-brand" href="/Home/Index">KSeF</a>
+            <div b-l0rwnlryl9 class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                <ul b-l0rwnlryl9 class="navbar-nav flex-grow-1">
+                        <li b-l0rwnlryl9 class="nav-item">
+                            <a class="nav-link text-dark" href="/">Zaloguj si─Ö</a>
+                        </li>
+                        <li b-l0rwnlryl9 class="nav-item">
+                            <a class="nav-link text-dark" href="/IO/Register">Zarejestruj si─Ö</a>
+                        </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+<div b-l0rwnlryl9 class="container">
+    <main b-l0rwnlryl9 role="main" class="pb-3">
+        
+
+    <div style="color: red;">
+        B&#x142;&#x119;dne dane logowania!
+    </div>
+
+<form method="post">
+    <input type="text" name="login" placeholder="Login"/>
+    <input type="password" name="password" placeholder="Has┼éo"/>
+    <button type="submit">Zaloguj</button>
+<input name="__RequestVerificationToken" type="hidden" value="CfDJ8GIC7mUbrmVNhvenKbbYPc6reEG4ULRD7Y8NbO8p0ZxCyTQpgFptMnU7JOd6Ul2FfXPGScBVZ-jHDIbXpFRNK3IOtj-By52CpT4xPp0-H71JgjsRmJoP0o7a83tDsbJMFpL6pm2hzORnJ1I5dU_pMjA" /></form>
+    </main>
+</div>
+
+<script src="/lib/jquery/dist/jquery.min.js"></script>
+<script src="/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/js/site.js?v=hRQyftXiu1lLX2P9Ly9xa4gHJgLeR1uGN5qegUobtGo"></script>
+
+</body>
+</html>

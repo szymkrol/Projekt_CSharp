@@ -1,0 +1,33 @@
+@{
+    ViewData["Title"] = "Rejestracja";
+    var currentUser = Context.Session.GetString("User");
+}
+
+@if (currentUser != "admin")
+{
+    <div class="alert alert-danger">Brak dostępu.</div>
+    return;
+}
+
+<h1>Rejestracja</h1>
+
+@if (Context.Session.GetString("Error") != null)
+{
+    <p style="color:red">@Context.Session.GetString("Error")</p>
+}
+
+<form method="post" asp-controller="IO" asp-action="Register">
+    <div>
+        <label>Login</label>
+        <input type="text" name="login" />
+    </div>
+    <div>
+        <label>Email</label>
+        <input type="email" name="mail" />
+    </div>
+    <div>
+        <label>Hasło</label>
+        <input type="password" name="password" />
+    </div>
+    <button type="submit">Zarejestruj użytkownika</button>
+</form>
